@@ -79,7 +79,7 @@ window.I18N.ja={
  "fSev":"{s}（CVSS {n}）",
  "fCvss":"- CVSS v3.1 基本値：{n}（{s}）",
  "fVec":"- ベクター：{v}",
- "fCweUnk":"- 脆弱性の種類（CWE）：{t}",
+ "fCweUnk":"- 脆弱性の種類：{t}",
  "pubd":"この脆弱性情報ページを公開しました。",
  "fLvl":"（{l}）",
  "fLint":"公開前に確認が必要な項目：あと{n}件",
