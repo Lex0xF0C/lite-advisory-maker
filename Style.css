@@ -1,0 +1,50 @@
+:root{--bg:#f3f6f7;--panel:#fff;--ink:#1c2733;--sub:#5b6b78;--line:#d3dce1;--accent:#0b6e7f;--accent-ink:#fff;--warn:#b4442b;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12191e;--panel:#1a242b;--ink:#e6edf1;--sub:#9aabb7;--line:#2f3e48;--accent:#4cb8cb;--accent-ink:#0b1a1f;--warn:#ff8a6b;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 "Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+header{padding:20px 20px 4px;max-width:1280px;margin:0 auto}
+h1{font-size:1.35rem;margin:0 0 4px}
+header p{margin:0;color:var(--sub);font-size:.9rem}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;max-width:1280px;margin:0 auto;padding:16px 20px 40px}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+section.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+label{display:block;font-weight:600;font-size:.88rem;margin:14px 0 4px}
+label small{font-weight:400;color:var(--sub)}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
+textarea{min-height:5.5em;resize:vertical}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.bar .spacer{flex:1}
+#out{white-space:pre-wrap;word-break:break-word;font:13px/1.65 ui-monospace,"Cascadia Mono",Consolas,monospace;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:12px;min-height:320px;margin:0}
+.preview-wrap{position:sticky;top:12px;align-self:start}
+#msg{color:var(--sub);font-size:.85rem}
+fieldset{border:1px solid var(--line);border-radius:6px;margin:10px 0;padding:6px 12px 8px}
+legend{font-weight:600;font-size:.88rem;padding:0 6px}
+.mdesc{margin:0 0 4px;color:var(--sub);font-size:.82rem}
+.opt{display:grid;grid-template-columns:1.4em 8.5em 1fr;column-gap:6px;align-items:start;font-weight:400;font-size:.88rem;margin:6px 0}
+.opt input{width:auto;margin:.4em 0 0;justify-self:start}
+.opt .on{font-weight:600}
+@media (max-width:560px){.opt{grid-template-columns:1.4em 1fr}.opt .od{grid-column:2}}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:600;font-size:.9rem}
+input[readonly]{opacity:.9}
+.note{color:var(--sub);font-size:.82rem;margin:10px 0 0}
+.pre{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.pre button{font-size:.8rem;padding:2px 8px}
+#lint{list-style:none;margin:0 0 10px;padding:0;font-size:.85rem}
+#lint li.ng{color:var(--warn)}
+#lintsum{margin:0 0 4px;font-weight:600;font-size:.9rem}
+.chk label{font-weight:400;display:flex;gap:8px;margin:6px 0;font-size:.88rem}
+.chk input{width:auto;margin-top:.45em;flex:none}
+.preview-wrap{max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:860px){.preview-wrap{position:static;max-height:none}}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top h1{margin:0}
+#lang{width:auto}
+.s3{min-height:3em}
+.s35{min-height:3.5em}
