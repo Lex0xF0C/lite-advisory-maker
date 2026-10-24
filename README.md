@@ -2,6 +2,8 @@
 
 **Static. Client-side. No dependencies.**
 
+デモ / Demo: <https://lex0xf0c.github.io/lite-advisory-maker/>
+
 [日本語](#日本語) | [English](#english) | [License](#license--ライセンス)
 
 ---
