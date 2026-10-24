@@ -1,0 +1,12 @@
+# GitHub Pages (Jekyll) settings / GitHub Pages (Jekyll) 設定
+# This site is plain static files. No Jekyll theme or plugins are used.
+# このサイトは静的ファイルのみで、Jekyllのテーマやプラグインは使いません。
+ 
+title: lite-advisory-maker
+description: Web-based Security Advisory Generator (JP/EN) - CVSS v3.1 calculation & Markdown export
+ 
+# Files that are not published on the site / 公開サイトに含めないファイル
+# (LICENSE is kept published on purpose so the MIT notice stays with the served copy.)
+exclude:
+  - AGENTS.md
+  - README.md
