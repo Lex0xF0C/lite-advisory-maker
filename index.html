@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; connect-src 'none'; form-action 'none'">
+<title>脆弱性アドバイザリ作成ツール</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+<div class="top"><h1 data-i18n="h1"></h1><select id="lang" aria-label="言語 / Language"><option value="ja">日本語</option><option value="en">English</option></select></div>
+<p data-i18n="intro"></p>
+</header>
+<main>
+<section class="panel" aria-label="Form">
+<form id="f" autocomplete="off">
+<div class="bar"><button type="button" id="clearall" data-i18n="clear"></button></div>
+
+<label for="status" data-i18n="stl"></label>
+<select id="status"><option value="" data-i18n="st0"></option><option value="urgent" data-i18n="st1"></option><option value="attack" data-i18n="st2"></option><option value="eol" data-i18n="st3"></option></select>
+
+<label for="title" data-i18n="tl"></label>
+<input id="title" data-i18n-ph="tph">
+
+<div class="row">
+<div><label for="aid" data-i18n="aidl"></label><input id="aid" placeholder="ADV-2026-001"></div>
+<div><label for="cve" data-i18n="cvel"></label><input id="cve" placeholder="CVE-2026-0001, CVE-2026-0002"></div>
+</div>
+<div class="row">
+<div><label for="pub" data-i18n="publ"></label><input id="pub" type="date"></div>
+<div><label for="upd" data-i18n="updl"></label><input id="upd" type="date"></div>
+</div>
+
+<label for="summary" data-i18n="suml"></label>
+<textarea id="summary" data-i18n-ph="sumph"></textarea>
+
+<label data-i18n="prodl"></label>
+<div id="prods"></div>
+<button type="button" id="addprod" data-i18n="addprod"></button>
+
+<label for="versioncheck" data-i18n="vcl"></label>
+<textarea id="versioncheck"></textarea>
+
+<label for="cwe" data-i18n="cwel"></label>
+<input id="cwe" list="cwelist" data-i18n-ph="cweph">
+<datalist id="cwelist"></datalist>
+<div id="cwenotebox" hidden>
+<label for="cwenote" data-i18n="cwenl"></label>
+<textarea id="cwenote" data-i18n-ph="cwenph"></textarea>
+</div>
+
+<label for="desc" data-i18n="descl"></label>
+<textarea id="desc"></textarea>
+
+<label for="impact" data-i18n="impl"></label>
+<textarea id="impact"></textarea>
+
+<label data-i18n="cvssl"></label>
+<details><summary data-i18n="cvsss"></summary>
+<div id="cvss"></div>
+<button type="button" id="cvssclear" data-i18n="cvssclear"></button>
+</details>
+<div class="row">
+<div><label for="score" data-i18n="scorel"></label><input id="score" readonly data-i18n-ph="scoreph"></div>
+<div><label for="sev" data-i18n="sevl"></label>
+<select id="sev"><option value="" data-i18n="sev0"></option><option value="critical"></option><option value="high"></option><option value="medium"></option><option value="low"></option><option value="none"></option></select></div>
+</div>
+<label for="vector" data-i18n="vecl"></label>
+<input id="vector" readonly>
+
+<label for="fix" data-i18n="fixl"></label>
+<textarea id="fix"></textarea>
+
+<label for="work" data-i18n="workl"></label>
+<textarea id="work"></textarea>
+
+<label for="refs" data-i18n="refl"></label>
+<textarea id="refs" placeholder="https://jvn.jp/..."></textarea>
+
+<label for="credit" data-i18n="credl"></label>
+<textarea id="credit" class="s3"></textarea>
+
+<label for="hist" data-i18n="histl"></label>
+<textarea id="hist" class="s3" data-i18n-ph="histph"></textarea>
+
+<label for="contact" data-i18n="contl"></label>
+<textarea id="contact" class="s35"></textarea>
+
+<details class="chk"><summary data-i18n="chks"></summary><div id="chklist"></div></details>
+<p class="note" data-i18n="note"></p>
+</form>
+</section>
+
+<section class="panel preview-wrap" aria-label="Markdown">
+<div class="bar">
+<button type="button" class="primary" id="copy" data-i18n="copy"></button>
+<button type="button" id="dl" data-i18n="dl"></button>
+<span class="spacer"></span><span id="msg" role="status"></span>
+</div>
+<p id="lintsum"></p>
+<ul id="lint"></ul>
+<pre id="out"></pre>
+</section>
+</main>
+<script src="lang/ja.js"></script>
+<script src="lang/en.js"></script>
+<script src="cvss.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
