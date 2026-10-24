@@ -2,7 +2,7 @@
 # This site is plain static files. No Jekyll theme or plugins are used.
 # このサイトは静的ファイルのみで、Jekyllのテーマやプラグインは使いません。
  
-title: lite-advisory-maker
+title: lite-advisory-maker （脆弱性対策アドバイザリ作成ツール）
 description: Web-based Security Advisory Generator (JP/EN) - CVSS v3.1 calculation & Markdown export
  
 # Files that are not published on the site / 公開サイトに含めないファイル
