@@ -3,9 +3,55 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'none'; connect-src 'none'; form-action 'none'">
-<title>脆弱性アドバイザリ作成ツール</title>
-<link rel="stylesheet" href="style.css">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; object-src 'none'; base-uri 'none'; connect-src 'none'; form-action 'none'">
+<title>脆弱性アドバイザリ & CSAF/VEX 作成ツール</title>
+<style>
+:root{--bg:#f3f6f7;--panel:#fff;--ink:#1c2733;--sub:#5b6b78;--line:#d3dce1;--accent:#0b6e7f;--accent-ink:#fff;--warn:#b4442b;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12191e;--panel:#1a242b;--ink:#e6edf1;--sub:#9aabb7;--line:#2f3e48;--accent:#4cb8cb;--accent-ink:#0b1a1f;--warn:#ff8a6b;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.7 "Hiragino Sans","Yu Gothic UI","Meiryo",system-ui,sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+header{padding:20px 20px 4px;max-width:1280px;margin:0 auto}
+h1{font-size:1.35rem;margin:0 0 4px}
+header p{margin:0;color:var(--sub);font-size:.9rem}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;max-width:1280px;margin:0 auto;padding:16px 20px 40px}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+section.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+label{display:block;font-weight:600;font-size:.88rem;margin:14px 0 4px}
+label small{font-weight:400;color:var(--sub)}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px}
+textarea{min-height:5.5em;resize:vertical}
+:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prod{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:6px}
+button{font:inherit;cursor:pointer;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;align-items:center}
+.bar .spacer{flex:1}
+#out{white-space:pre-wrap;word-break:break-word;font:13px/1.65 ui-monospace,"Cascadia Mono",Consolas,monospace;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:12px;min-height:320px;margin:0}
+.preview-wrap{position:sticky;top:12px;align-self:start;max-height:calc(100vh - 24px);overflow:auto}
+@media (max-width:860px){.preview-wrap{position:static;max-height:none}}
+#msg{color:var(--sub);font-size:.85rem}
+fieldset{border:1px solid var(--line);border-radius:6px;margin:10px 0;padding:6px 12px 8px}
+legend{font-weight:600;font-size:.88rem;padding:0 6px}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:600;font-size:.9rem}
+input[readonly]{opacity:.9}
+.note{color:var(--sub);font-size:.82rem;margin:10px 0 0}
+#lint{list-style:none;margin:0 0 10px;padding:0;font-size:.85rem}
+#lint li.ng{color:var(--warn)}
+#lintsum{margin:0 0 4px;font-weight:600;font-size:.9rem}
+.chk label{font-weight:400;display:flex;gap:8px;margin:6px 0;font-size:.88rem}
+.chk input{width:auto;margin-top:.45em;flex:none}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.top h1{margin:0}
+#lang{width:auto}
+.s3{min-height:3em}
+.s35{min-height:3.5em}
+.tabs{display:flex;gap:4px;margin-bottom:10px}
+.tabs button{font-size:0.85rem;padding:4px 10px}
+</style>
 </head>
 <body>
 <header>
@@ -25,7 +71,7 @@
 
 <div class="row">
 <div><label for="aid" data-i18n="aidl"></label><input id="aid" placeholder="ADV-2026-001"></div>
-<div><label for="cve" data-i18n="cvel"></label><input id="cve" placeholder="CVE-2026-0001, CVE-2026-0002"></div>
+<div><label for="cve" data-i18n="cvel"></label><input id="cve" placeholder="CVE-2026-0001"></div>
 </div>
 <div class="row">
 <div><label for="pub" data-i18n="publ"></label><input id="pub" type="date"></div>
@@ -39,16 +85,9 @@
 <div id="prods"></div>
 <button type="button" id="addprod" data-i18n="addprod"></button>
 
-<label for="versioncheck" data-i18n="vcl"></label>
-<textarea id="versioncheck"></textarea>
-
 <label for="cwe" data-i18n="cwel"></label>
 <input id="cwe" list="cwelist" data-i18n-ph="cweph">
 <datalist id="cwelist"></datalist>
-<div id="cwenotebox" hidden>
-<label for="cwenote" data-i18n="cwenl"></label>
-<textarea id="cwenote" data-i18n-ph="cwenph"></textarea>
-</div>
 
 <label for="desc" data-i18n="descl"></label>
 <textarea id="desc"></textarea>
@@ -78,34 +117,226 @@
 <label for="refs" data-i18n="refl"></label>
 <textarea id="refs" placeholder="https://jvn.jp/..."></textarea>
 
-<label for="credit" data-i18n="credl"></label>
-<textarea id="credit" class="s3"></textarea>
-
-<label for="hist" data-i18n="histl"></label>
-<textarea id="hist" class="s3" data-i18n-ph="histph"></textarea>
-
 <label for="contact" data-i18n="contl"></label>
 <textarea id="contact" class="s35"></textarea>
-
-<details class="chk"><summary data-i18n="chks"></summary><div id="chklist"></div></details>
-<p class="note" data-i18n="note"></p>
 </form>
 </section>
 
-<section class="panel preview-wrap" aria-label="Markdown">
+<section class="panel preview-wrap" aria-label="Output">
+<div class="tabs">
+<button type="button" id="tab-md" class="active">Markdown</button>
+<button type="button" id="tab-csaf">CSAF 2.0 (JSON)</button>
+</div>
 <div class="bar">
 <button type="button" class="primary" id="copy" data-i18n="copy"></button>
 <button type="button" id="dl" data-i18n="dl"></button>
 <span class="spacer"></span><span id="msg" role="status"></span>
 </div>
+<div id="lint-area">
 <p id="lintsum"></p>
 <ul id="lint"></ul>
+</div>
 <pre id="out"></pre>
 </section>
 </main>
-<script src="lang/ja.js"></script>
-<script src="lang/en.js"></script>
-<script src="cvss.js"></script>
-<script src="app.js"></script>
+
+<script>
+window.I18N = {
+  ja: {
+    ui: {
+      h1: "脆弱性アドバイザリ & CSAF作成ツール",
+      intro: "ブラウザ完結でMarkdownとCSAF 2.0 (JSON) を生成します。データは外部に送信されません。",
+      clear: "入力を消去",
+      stl: "状況",
+      st0: "通常（修正版を公開）",
+      st1: "緊急（被害拡大のおそれ）",
+      st2: "攻撃確認済み",
+      st3: "サポート終了",
+      tl: "タイトル",
+      tph: "例：〇〇製品における脆弱性",
+      aidl: "管理番号",
+      cvel: "CVE番号",
+      publ: "公開日",
+      updl: "最終更新日",
+      suml: "概要",
+      sumph: "概要を入力してください",
+      prodl: "影響を受ける製品",
+      pn: "製品名",
+      pv: "バージョン",
+      pdel: "削除",
+      addprod: "製品を追加",
+      cwel: "脆弱性の種類 (CWE)",
+      cweph: "例：CWE-79",
+      descl: "脆弱性の説明",
+      impl: "脅威",
+      cvssl: "CVSS v3.1 基本値",
+      cvsss: "スコア計算機を開く",
+      cvssclear: "選択解除",
+      scorel: "基本スコア",
+      sevl: "深刻度",
+      sev0: "自動判定",
+      vecl: "ベクター",
+      fixl: "対策方法",
+      workl: "回避策",
+      refl: "関連情報",
+      contl: "連絡先",
+      copy: "クリップボードにコピー",
+      dl: "ファイルで保存",
+      copied: "コピーしました",
+      saved: "保存しました"
+    }
+  },
+  en: {
+    ui: {
+      h1: "Vulnerability Advisory & CSAF Builder",
+      intro: "Generate Markdown and CSAF 2.0 (JSON) entirely in your browser.",
+      clear: "Clear all",
+      stl: "Situation",
+      st0: "Normal",
+      st1: "Urgent",
+      st2: "Attacks confirmed",
+      st3: "End of support",
+      tl: "Title",
+      tph: "e.g. Vulnerability in Product",
+      aidl: "Advisory ID",
+      cvel: "CVE IDs",
+      publ: "Publication Date",
+      updl: "Last Updated",
+      suml: "Overview",
+      sumph: "Enter overview",
+      prodl: "Affected Products",
+      pn: "Product Name",
+      pv: "Version",
+      pdel: "Delete",
+      addprod: "Add Product",
+      cwel: "CWE",
+      cweph: "e.g. CWE-79",
+      descl: "Description",
+      impl: "Impact",
+      cvssl: "CVSS v3.1",
+      cvsss: "Open CVSS Calculator",
+      cvssclear: "Clear",
+      scorel: "Base Score",
+      sevl: "Severity",
+      sev0: "Auto",
+      vecl: "Vector",
+      fixl: "Countermeasure",
+      workl: "Workaround",
+      refl: "References",
+      contl: "Contact",
+      copy: "Copy to Clipboard",
+      dl: "Save File",
+      copied: "Copied",
+      saved: "Saved"
+    }
+  }
+};
+
+let currentTab = 'md'; // 'md' or 'csaf'
+
+// 簡易的なプレビュー・ジェネレータの配線
+document.getElementById('tab-md').addEventListener('click', () => {
+  currentTab = 'md';
+  document.getElementById('tab-md').classList.add('active');
+  document.getElementById('tab-csaf').classList.remove('active');
+  document.getElementById('lint-area').style.display = 'block';
+  updateOutput();
+});
+
+document.getElementById('tab-csaf').addEventListener('click', () => {
+  currentTab = 'csaf';
+  document.getElementById('tab-csaf').classList.add('active');
+  document.getElementById('tab-md').classList.remove('active');
+  document.getElementById('lint-area').style.display = 'none';
+  updateOutput();
+});
+
+function generateCSAF(data) {
+  return JSON.stringify({
+    document: {
+      category: "csaf_security_advisory",
+      csaf_version: "2.0",
+      title: data.title || "Untitled Advisory",
+      publisher: {
+        category: "vendor",
+        name: "My Organization",
+        namespace: "https://example.com"
+      },
+      tracking: {
+        id: data.aid || "ADV-2026-001",
+        status: "final",
+        version: "1.0.0",
+        initial_release_date: (data.pub || new Date().toISOString().split('T')[0]) + "T00:00:00.000Z",
+        current_release_date: (data.upd || data.pub || new Date().toISOString().split('T')[0]) + "T00:00:00.000Z",
+        revision_history: [{
+          number: "1.0.0",
+          date: (data.pub || new Date().toISOString().split('T')[0]) + "T00:00:00.000Z",
+          summary: "Initial release"
+        }]
+      }
+    },
+    vulnerabilities: data.cve ? [{
+      cve: data.cve.split(',')[0].trim(),
+      notes: data.summary ? [{ category: "description", text: data.summary }] : [],
+      scores: data.vector ? [{
+        cvss_v3: {
+          version: "3.1",
+          vectorString: data.vector,
+          baseScore: parseFloat(data.score) || 0.0,
+          baseSeverity: (data.sev || "MEDIUM").toUpperCase()
+        }
+      }] : []
+    }] : []
+  }, null, 2);
+}
+
+function updateOutput() {
+  const data = {
+    title: document.getElementById('title').value,
+    aid: document.getElementById('aid').value,
+    cve: document.getElementById('cve').value,
+    pub: document.getElementById('pub').value,
+    upd: document.getElementById('upd').value,
+    summary: document.getElementById('summary').value,
+    vector: document.getElementById('vector').value,
+    score: document.getElementById('score').value,
+    sev: document.getElementById('sev').value
+  };
+
+  if (currentTab === 'csaf') {
+    document.getElementById('out').textContent = generateCSAF(data);
+  } else {
+    // 従来のMarkdown出力プレビュー
+    document.getElementById('out').textContent = `# ${data.title || '(タイトル未入力)'}\n\n## 概要\n${data.summary || ''}\n\n## CVE\n${data.cve || 'なし'}`;
+  }
+}
+
+// 入力変更時にリアルタイム更新
+document.querySelectorAll('input, textarea, select').forEach(el => {
+  el.addEventListener('input', updateOutput);
+});
+
+// コピーボタン
+document.getElementById('copy').addEventListener('click', () => {
+  navigator.clipboard.writeText(document.getElementById('out').textContent).then(() => {
+    const msg = document.getElementById('msg');
+    msg.textContent = I18N.ja.ui.copied;
+    setTimeout(() => msg.textContent = '', 2000);
+  });
+});
+
+// ダウンロードボタン
+document.getElementById('dl').addEventListener('click', () => {
+  const text = document.getElementById('out').textContent;
+  const filename = currentTab === 'csaf' ? 'advisory.csaf.json' : 'advisory.md';
+  const blob = new Blob([text], { type: currentTab === 'csaf' ? 'application/json' : 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+</script>
 </body>
 </html>
